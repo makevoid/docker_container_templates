@@ -1,0 +1,10 @@
+{
+  "name": "node-express",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "license": "Unlicense",
+  "scripts": {
+    "start": "node app.js"
+  }
+}

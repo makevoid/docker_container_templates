@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+geth --genesis config/genesis.json --dev --rpc --rpcaddr 0.0.0.0
