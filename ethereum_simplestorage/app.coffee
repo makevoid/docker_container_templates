@@ -31,41 +31,71 @@ c.log "Coinbase account address: #{address}"
 await eth.getBalance address,  defer _, balance
 c.log "Balance: #{balance}\n"
 
-process.exit 0
 
-# contracts_compiled = fs.readFileSync './config/contracts.json'
-# contracts_compiled = JSON.parse contracts_compiled
-# contract_compiled = contracts_compiled.contracts.SimpleStorage
-# abi      = JSON.parse contract_compiled.interface
-# bytecode = contract_compiled.bytecode
-#
-# # contract class
-# SimpleStorage = eth.contract abi
-#
+contracts_compiled = fs.readFileSync './config/contracts.json'
+contracts_compiled = JSON.parse contracts_compiled
+contract_compiled = contracts_compiled.contracts.SimpleStorage
+abi      = JSON.parse contract_compiled.interface
+bytecode = contract_compiled.bytecode
+
+# contract class
+SimpleStorage = eth.contract abi
+
 # # TODO: read from file
-# contract_address = null
-# # contract_address = "0xfd17dc839a122e62aae0974b5f491b4f81f6ede1"
-#
-# if contract_address
-#   simpleStorage = SimpleStorage.at contract_address
-#   data = simpleStorage.data()
-#   c.log "data (raw):", data
-#   c.log "data:", web3.toAscii data
-#
-#   simpleStorage.set "abcd",
-#     from: address
-#
-# unless contract_address
-#   simpleStorage = SimpleStorage.new
-#     data: bytecode
-#     from: address
-#     # gas:  1e10
-#     (err, contract) ->
-#       if err
-#         c.error err
-#       else
-#         unless contract.address
-#           c.log "TX:", contract.transactionHash
-#         else
-#           c.log "Contract address:", contract.address
-#           process.exit 0
+contract_address = null
+# contract_address = "0xfd17dc839a122e62aae0974b5f491b4f81f6ede1"
+
+checkDeployment = (contract) ->
+  unless contract.address
+    setTimeout ->
+      checkDeployment contract
+    , 100
+  else
+    c.log "Contract address:", contract.address
+    deployDone contract.address
+
+deployDone = (contract_address) ->
+  simpleStorage = SimpleStorage.at contract_address
+
+  await simpleStorage.data defer _, data
+  c.log "data (raw):", data
+  c.log "data:", web3.toAscii data if data
+  c.log "\n"
+
+  c.log "setting data...\n\n"
+  simpleStorage.set "abcd",
+    from: address
+    defer _x
+
+  await setTimeout defer(_x2), 3000
+
+  c.log "\n"
+  await simpleStorage.data defer _, data
+  c.log "data (raw):", data
+  c.log "data:", web3.toAscii data if data
+  c.log "\n"
+
+  c.log "exiting..."
+  process.exit 0
+
+
+unless contract_address
+  await SimpleStorage.new
+    data: bytecode
+    from: address
+    # gas:  1e10
+    defer err, contract
+
+  if err
+    c.error err
+  else
+    c.log "TX:", contract.transactionHash
+    c.log "\n"
+
+  checkDeployment contract
+
+
+setTimeout ->
+  c.log "Exiting after timing out..."
+  process.exit 0
+, 6000

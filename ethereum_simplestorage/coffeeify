@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-iced -c -o dist app.coffee
+# coffee -c -o dist compile.coffee
+iced   -c -o dist app.coffee
