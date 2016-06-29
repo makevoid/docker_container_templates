@@ -54,6 +54,7 @@ ADD coffeeify /app
 ADD prepare_genesis /app
 
 ADD *.coffee /app
+ADD lib /app
 RUN ./coffeeify
 # RUN node dist/prepare_genesis.js
 
@@ -65,7 +66,8 @@ RUN geth --datadir . --dev --exec "eth.getBalance(eth.coinbase)" console
 EXPOSE 8545
 EXPOSE 30303
 
-ENTRYPOINT ["/usr/bin/geth",  "--datadir", ".", "--password", "config/password.txt", "--unlock", "0", "--dev", "--rpc", "--rpcaddr", "0.0.0.0"]
+
+ENTRYPOINT ["/usr/bin/geth",  "--datadir", ".", "--password", "config/password.txt", "--unlock", "0", "--dev", "--rpc", "--rpcaddr", "0.0.0.0", "js", "./dist/geth_mine.js"]
 
 
 
