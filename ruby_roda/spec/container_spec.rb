@@ -8,9 +8,14 @@ require "spec_helper"
 describe "Container" do
 
   it "hello worlds on all instances" do
+    # exe "docker-compose down"
     exe "docker-compose kill"
     exe "docker-compose up --build -d"
-    sleep 1
+    exe "docker-compose scale app=3"
+
+    sleep 0.2
+    # probably sleep 1 on a slower laptop - msivoid
+
     # lines = exe "docker-compose ps"
     # p instances = lines[2..-1]
     #
@@ -20,10 +25,13 @@ describe "Container" do
     #   exe "docker inspect #{instance}"
     # end
 
+    ip2 = 30
+    ip2 = 20 if `hostname`.strip == "mkvtop"
+
     instances = [
-      "172.30.0.2",
-      "172.30.0.3",
-      "172.30.0.4",
+      "172.#{ip2}.0.2",
+      "172.#{ip2}.0.3",
+      "172.#{ip2}.0.4",
     ]
 
     instances.size.should == 3
