@@ -4,13 +4,13 @@
 Web3 = require "web3"
 fs   = require 'fs'
 
-# host = "http://localhost:8545"
-# web3 = new Web3(new Web3.providers.HttpProvider host)
+host = "http://localhost:8545"
+web3 = new Web3(new Web3.providers.HttpProvider host)
 
-ipc      = "/datadir/geth.ipc"
-console.log "IPC path: #{ipc}\n"
-provider = new Web3.providers.IpcProvider  ipc, require('net')
-web3     = new Web3 provider
+# ipc      = "/datadir/geth.ipc"
+# console.log "IPC path: #{ipc}\n"
+# provider = new Web3.providers.IpcProvider  ipc, require('net')
+# web3     = new Web3 provider
 
 
 eth  = web3.eth
@@ -25,7 +25,9 @@ address = null
 #
 # to this (synchronous via await/defer):
 #
+
 await eth.getCoinbase defer _, address
+# address = eth.accounts[0]
 c.log "Coinbase account address: #{address}"
 
 await eth.getBalance address,  defer _, balance
@@ -37,6 +39,9 @@ contracts_compiled = JSON.parse contracts_compiled
 contract_compiled = contracts_compiled.contracts.SimpleStorage
 abi      = JSON.parse contract_compiled.interface
 bytecode = contract_compiled.bytecode
+bytecode = "0x#{bytecode}" # if PARITY
+
+c.log JSON.stringify abi
 
 # contract class
 SimpleStorage = eth.contract abi
@@ -46,6 +51,8 @@ contract_address = null
 # contract_address = "0xfd17dc839a122e62aae0974b5f491b4f81f6ede1"
 
 checkDeployment = (contract) ->
+  c.log "TX:", contract.transactionHash
+  c.log "addr:",contract.address
   unless contract.address
     setTimeout ->
       checkDeployment contract
@@ -88,11 +95,12 @@ unless contract_address
 
   if err
     c.error err
+    process.exit 1
   else
     c.log "TX:", contract.transactionHash
     c.log "\n"
 
-  checkDeployment contract
+    checkDeployment contract
 
 
 setTimeout ->

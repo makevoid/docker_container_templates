@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+# docker-compose up -d --build
+#
+# docker-compose scale app=3
+
+
+# docker-compose kill
+
+docker-compose up -d --build
+
+# docker-compose scale app=3
+
+# docker-compose scale app=20

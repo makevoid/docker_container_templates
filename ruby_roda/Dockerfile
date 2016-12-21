@@ -1,12 +1,14 @@
-FROM ruby:2.1
+FROM ruby:2.3.3-alpine
 
-RUN apt-get install -y git
+# RUN apt-get install -y git
 
-RUN mkdir /app
 WORKDIR /app
+
+ADD Gemfile      /app/
+ADD Gemfile.lock /app/
+
+RUN bundle --without development test --jobs 8
+
 ADD . /app
 
-ENV BUNDLE_PATH /tmp/bundle
-
-RUN bundle install
-CMD ./run_app.sh
+CMD ./run_app

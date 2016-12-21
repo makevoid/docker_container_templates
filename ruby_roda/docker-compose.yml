@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+  # main container
+  # ------------------------
+  app:
+    build: .
+    environment:
+      DOCKER: '1'
+    ports:
+      - 3000
+    volumes:
+      - /var/log/ruby_roda
+    # depends_on:
+    #   - redis
+
+  # ------------------------
+
+
+  # redis (cluster) container
+  # redis:
+  #   image: redis
+  #   restart: always
+  #   ports:
+  #     - 6379
+  #     - 16379

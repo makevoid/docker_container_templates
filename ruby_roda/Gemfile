@@ -1,5 +1,14 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 gem "roda"
 
-gem "puma"
+# gem "puma" # requires c extensions
+
+
+group :test do
+  gem "rspec-core"
+  gem "rspec-mocks"
+  gem "rspec-expectations"
+  #
+  gem "httparty"
+end

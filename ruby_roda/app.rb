@@ -1,5 +1,4 @@
-require 'bundler'
-Bundler.require :default
+require_relative 'env'
 
 class App < Roda
   route do |r|
